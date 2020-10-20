@@ -20,3 +20,15 @@ osha_analysis_data <- read_csv("../data/osha_inspections.csv")
 glimpse(osha_analysis_data)
 
 ```
+
+```{r}
+year_fatal_cat_insp <- osha_analysis_data %>%
+  filter(insp_type == "M", safety_hlth == "S") %>%
+  mutate(year = year(open_date)) %>%
+  group_by(year) %>%
+  select(year, insp_type) %>%
+  count(insp_type = "M")
+
+year_fatal_cat_insp
+  
+```

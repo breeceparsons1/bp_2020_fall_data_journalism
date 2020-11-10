@@ -21,13 +21,32 @@ glimpse(osha_analysis_data)
 
 ```
 
+
+### Sentence 2 
+
+In 2019, OSHA’s safety inspectors conducted 962 investigations into fatal or catastrophic workplace incidents — the highest number since the agency began publishing the data in 2011.
+
+
 ```{r}
+# First, create an object called year_fatal_cat_insp.
 year_fatal_cat_insp <- osha_analysis_data %>%
+  
+  #According to the Center for Public Integrity's repo, the "M" in insp_type refers to fatalities/ catastrophes 
+  #And "S" in safety_hlth column refers to Safety inspections
   filter(insp_type == "M", safety_hlth == "S") %>%
+  
+  #create a new column, year
   mutate(year = year(open_date)) %>%
+  
+  #group by that culumn
   group_by(year) %>%
   select(year, insp_type) %>%
-  count(insp_type = "M")
+  
+  #count number of insp_type was "M"
+  count(insp_type = "M")%>%
+  
+  #filter by 2019
+  filter(year == "2019")
 
 year_fatal_cat_insp
   

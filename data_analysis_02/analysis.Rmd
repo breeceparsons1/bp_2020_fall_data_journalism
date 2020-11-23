@@ -10,12 +10,370 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load Libraries
 ```{r}
 library(tidyverse)
+library(janitor)
+library(vembedr)
 ```
 
 ## Load Data
 ```{r}
+heritage <- read_csv("data/Whose_Heritage.csv") %>%
+  clean_names()
+```
+## Exploratory Analysis 
+
+```{r}
+heritage %>%
+  group_by(state) %>%
+  count() %>%
+  arrange(desc(n)) %>%
+```
+
+```{r}
+heritage %>%
+  group_by(symbol_category) %>%
+  count() %>%
+  arrange(desc(n)) 
+```
+```{r}
+heritage %>%
+  group_by(year_removed) %>%
+  count() %>%
+  arrange(desc(n)) 
+```
+```{r}
+heritage %>%
+  group_by(symbol_type, symbol_category) %>%
+  count() %>%
+  arrange(desc(n)) 
+```
+```{r}
+heritage %>%
+  group_by(year_dedicated) %>%
+  count() %>%
+  arrange(desc(n)) 
+```
+## Exploratory analysis
+##Finding 1: Spencer
+
+```{r}
+# Here the cleaned data is grouped by sponsor, year dedicated and symbol type to give a general information surrounding the creation of these symbols
+
+heritage_sponsors <- heritage %>%
+  group_by(sponsors, year_dedicated, symbol_type) %>%
+    count() %>%
+  arrange(desc(n))
+
+heritage_sponsors
+
+# Here we get the count of how many total monuments each sponsor has made.
+```
+
+# The highest result is "Unknown" with 1099, but the United Daughters of Confederacy was the named sponsor with the highest number at 399.
+```{r}
+sponsor_count <- heritage %>%
+group_by(sponsors) %>%
+  count() %>%
+  arrange(desc(n))
+
+sponsor_count
 
 ```
+
+# With the United Daughters of the Confederacy having the most, we broke down the just that sponsor the same way as the heritage_sponsors string.
+
+```{r}
+heritage_sponsors_UDC <- heritage %>%
+  group_by(sponsors, year_dedicated, symbol_type) %>%
+  filter(sponsors == "United Daughters of the Confederacy") %>%
+    count() %>%
+  arrange(desc(n))
+
+heritage_sponsors_UDC
+
+```
+
+```{r}
+# This string shows the total number of actual monuments from each sponsor, and arranges from highest to lowest.
+
+# The United Daughters of the Confederacy has the most symbols classified as actual monuments.
+
+symbol_monument <- heritage %>%
+  group_by(sponsors) %>%
+  filter(symbol_type == "Monument") %>%
+  count() %>%
+  arrange(desc(n))
+
+symbol_monument
+```
+
+##Finding 2: Wesley 
+
+## Description: These blocks are meant to filter what year monuments were dedicated and removed by state.
+
+## The first block handles the dedication years, filtering out those that are unknown, then grouping by state and year_dedicated, then listed in descending order.
+
+```{r}
+heritage %>%
+  filter(year_dedicated >= "1854") %>%
+  filter(year_dedicated <= "2020") %>%
+  group_by(state, year_dedicated)%>%
+  count() %>%
+  arrange(desc(n))
+
+```
+## The second block handles the removal years, filtering out those that are unknown, then grouping by state and year_removed, then listed in descending order.
+
+```{r}
+heritage %>%
+  filter(year_removed >= "1854") %>%
+  filter(year_removed <= "2020") %>%
+  group_by(state, year_removed)%>%
+  count() %>%
+  arrange(desc(n))
+```
+##Finding 3: Susannah 
+
+## Description: This block will examine which honoree has the most monuments listed to their names out of the entire list and then out of the names highlighted in the data.
+
+##DESCRIPTION OF WHAT THE DATA IS, WHERE YOU GOT IT, WHAT IT INCLUDES, INCLUDING A LIST OF WHAT EACH FIELD IS. 
+
+##* first_name | character | name of officer
+
+
+```{r}
+most_honoree_count <- heritage %>%
+  rename(honoree_name = `COUNTA of feature_name`) %>%
+  rename(grand_total = `X31`)%>%
+   select(honoree_name, grand_total) %>%
+   group_by(honoree_name) %>%
+   arrange(desc(grand_total))
+#need to convert chr to dbl
+most_honoree_count
+
+```
+
+
+#Now that I know which honoree has the most statues, I will see which, out of the four leaders chosen, has the most.
+```{r}
+# Read in the next batch of data
+
+stonewall_jackson <- read_csv("data/Stonewall_Jackson.csv")
+
+stonewall_jackson
+
+robert_e_lee <- read_csv("data/Robert_E_Lee_.csv")
+
+robert_e_lee
+
+jefferson_davis <- read_csv("data/Jefferson_Davis_.csv")
+
+jefferson_davis
+
+bedford_forest <- read_csv("data/Nathan_Bedford_Forrest.csv")
+
+bedford_forest
+```
+
+```{r}
+stonewall_total <- stonewall_jackson %>%
+    rename(state = `COUNTA of feature_name`) %>%
+    rename(grand_total = `X13`)%>%
+   select(`state`, grand_total) %>%
+   group_by(`state`) %>%
+   arrange(desc(grand_total))
+#need to convert chr to dbl
+stonewall_total
+
+```
+
+#Finding the Robert E. Lee total
+```{r}
+lee_total <- robert_e_lee %>%
+  rename(state = `COUNTA of feature_name`) %>%
+    rename(grand_total = `X13`)%>%
+   select(`state`, grand_total) %>%
+   group_by(`state`) %>%
+   arrange(desc(grand_total))
+#need to convert chr to dbl
+lee_total
+
+```
+
+#Finding the Jefferson Davis Total
+```{r}
+davis_total <- jefferson_davis %>%
+ rename(state = `COUNTA of feature_name`) %>%
+    rename(grand_total = `X14`)%>%
+   select(`state`, grand_total) %>%
+   group_by(`state`) %>%
+   arrange(desc(grand_total))
+#need to convert chr to dbl
+davis_total
+
+```
+
+#Finding the Forest total
+```{r}
+forest_total <- bedford_forest %>%
+   rename(state = `COUNTA of feature_name`) %>%
+    rename(grand_total = `X10`)%>%
+   select(`state`, grand_total) %>%
+   group_by(`state`) %>%
+   arrange(desc(grand_total))
+#need to convert chr to dbl
+forest_total
+
+```
+
+##Finding 4: Breece
+
+## Description: This block will determine which states have the most symbols and specifically, monuments and how the number’s changed over time 
+
+#Finding which states have the most symbols 
+
+```{r}
+states_total <- heritage %>%
+  clean_names() %>%
+  group_by(state) %>%
+  count() %>%
+  arrange(desc(n)) 
+states_total
+```
+
+#A: VA has the most with 301, followed by Texas with 242. 
+
+#Adding a filter column to specifically look at monuments 
+
+```{r}
+states_monument_total <- heritage %>%
+  clean_names() %>%
+  group_by(state) %>%
+  filter(symbol_type == "Monument") %>%
+  count(state) %>%
+  arrange(desc(n))
+
+  states_monument_total
+
+```
+
+#A: Found VA had most with 119 and GA had second most with 113 
+
+#Now, filtering the data to only include symbols that have a year_dedicated value of less than or equal to 1936, which is halfway between the lowest and highest year_dedicated value to show how the numbers have changed over time. 
+
+```{r}
+states_total_before <- heritage %>%
+  clean_names() %>%
+  group_by(state) %>%
+  filter(year_dedicated <= "1936") %>% 
+  count() %>%
+  arrange(desc(n))
+
+  states_total_before
+
+```
+#A: Found VA had the most still with 126 and Texas next with 110.  
+
+# Now, adding another filter column to specifically look at monuments
+
+```{r}
+states_monument_before <- heritage %>%
+  clean_names() %>%
+  group_by(state) %>%
+  filter(year_dedicated < "1936") %>%
+  filter(symbol_type == "Monument") %>%
+  count() %>%
+  arrange(desc(n))
+
+  states_monument_before
+```
+#A: Found VA had most with 97. Second, GA and NC both had 79  
+
+##Finding 5: Jummy 
+
+## Question: After monuments, what are the five symbols have the next most amount? And what are the states that display those symbols the most?
+
+```{r}
+
+# To being answering the first part of this question, we'll first create a new data set, then group, count and raange the data set by symbol_type, so that only the number of each type of symbol will display.
+
+types_of_symbols <- heritage %>%
+group_by(symbol_type)%>%
+count()%>%
+arrange(desc(n))
+
+# This shows us that while Monuments maintain the highest number of symbols, Highway/Roadways, Schools, County/Municipality, Parks and Colleges are the next on the list with high numbers. No other symbols have more than 40.
+
+types_of_symbols
+
+```
+
+# Our next goal here was to isolate the 5 before opening it up to discover what states displayed these symbols the most. Unfortunately, on our first attempt, "Highway / Roadway" did not display within the new filtered data set.
+
+```{r}
+top_5_symbols <- types_of_symbols %>%
+filter(symbol_type == "Highway / Rooadway" | symbol_type == 
+         "School" | symbol_type == "County/Municipality" | symbol_type == "Park" | symbol_type == "College")
+
+# Unsure why Highway/Roadway is not displaying in this filter.
+top_5_symbols
+
+```
+# The easiest way to now determine which states display these symbols the most is to return back to the heritage set to create data sets for each of the symbol_types that display the state. Then count by state and arrange in descending order to see which states have the most. We want to observe the top 5 and perhaps discover any correlations. 
+
+```{r}
+# Highways / Roadways -- still confused to why it displays in this filter but not in the previous filter above. There are 658 in total: 118 - SC, 105 - VA, 71 - MS, 65 - GA, NC - 63. 
+highway_roadway <- heritage %>%
+  select(symbol_type, state) %>%
+  group_by(state)%>%
+  filter(symbol_type == "Highway / Roadway")%>%
+  count(state)%>%
+  arrange(desc(n))
+
+highway_roadway
+
+# Schools -- total is 152: TX - 57, VA - 27, AL - 10, FL - 10, MS - 10
+schools <- heritage %>%
+  select(symbol_type, state) %>%
+  group_by(state)%>%
+  filter(symbol_type == "School")%>%
+  count(state)%>%
+  arrange(desc(n))
+
+schools
+
+# County/Municipality -- total is 56: TX - 25, GA - 6, AL - 5, FL - 5, MS -4
+county_municipality <- heritage %>%
+  select(symbol_type, state) %>%
+  group_by(state)%>%
+  filter(symbol_type == "County/Municipality")%>%
+  count(state)%>%
+  arrange(desc(n))
+
+county_municipality
+
+# Park -- total is 43: TX - 7, VA - 6, AL - 5, TN - 5, FL - 4
+park <- heritage %>%
+  select(symbol_type, state) %>%
+  group_by(state)%>%
+  filter(symbol_type == "Park")%>%
+  count(state)%>%
+  arrange(desc(n))
+
+park
+
+#College -- total is 40: VA - 22, AL - 3, GA - 3, LA - 3, CA - 2
+college <- heritage %>%
+  select(symbol_type, state) %>%
+  group_by(state)%>%
+  filter(symbol_type == "College")%>%
+  count(state)%>%
+  arrange(desc(n))
+
+college
+```
+
+
+
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 

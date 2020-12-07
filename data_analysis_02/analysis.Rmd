@@ -108,40 +108,55 @@ symbol_monument
 
 ##Finding 2: Wesley 
 
-## Description: These blocks are meant to filter what year monuments were dedicated and removed by state.
-
-## The first block handles the dedication years, filtering out those that are unknown, then grouping by state and year_dedicated, then listed in descending order.
+## This is a look into the "where" and "when" aspects of dedications and removals of monuments sponsored by the United Daughters of the Confederacy.
 
 ```{r}
-heritage %>%
-  filter(year_dedicated >= "1854") %>%
-  filter(year_dedicated <= "2020") %>%
-  group_by(state, year_dedicated)%>%
-  count() %>%
-  arrange(desc(n))
+
+# Working to get a clear picture of recent dedications, here are the UDC dedications since 2010 and what state they are in.
+
+UDC_recent_dedications <- heritage %>%
+filter(year_dedicated >= "2010") %>%
+filter(year_dedicated <= "2020") %>%
+group_by(sponsors, year_dedicated, symbol_type, state) %>%
+filter(sponsors == "United Daughters of the Confederacy") %>%
+count() %>%
+arrange(desc(year_dedicated))
+
+UDC_recent_dedications
 
 ```
-## The second block handles the removal years, filtering out those that are unknown, then grouping by state and year_removed, then listed in descending order.
+
 
 ```{r}
-heritage %>%
-  filter(year_removed >= "1854") %>%
-  filter(year_removed <= "2020") %>%
-  group_by(state, year_removed)%>%
-  count() %>%
-  arrange(desc(n))
+# Working to get a clear picture of recent dedications, here are the UDC dedications since 2010 and what state they are in.
+
+UDC_recent_removals <- heritage %>%
+filter(year_removed >= "2010") %>%
+filter(year_removed <= "2020") %>%
+group_by(sponsors, year_dedicated, year_removed, symbol_type, state) %>%
+filter(sponsors == "United Daughters of the Confederacy") %>%
+count() %>%
+arrange(desc(year_removed))
+
+UDC_recent_removals
+
 ```
+
 ##Finding 3: Susannah 
-
-## Description: This block will examine which honoree has the most monuments listed to their names out of the entire list and then out of the names highlighted in the data.
 
 ##DESCRIPTION OF WHAT THE DATA IS, WHERE YOU GOT IT, WHAT IT INCLUDES, INCLUDING A LIST OF WHAT EACH FIELD IS. 
 
-##* first_name | character | name of officer
-
+## * first_name | character | name of officer
 
 ```{r}
-most_honoree_count <- heritage %>%
+# Read in the data
+
+honoree_count <- read_csv("data/Honoree_Count.csv")
+
+honoree_count
+```
+```{r}
+most_honoree_count <- honoree_count %>%
   rename(honoree_name = `COUNTA of feature_name`) %>%
   rename(grand_total = `X31`)%>%
    select(honoree_name, grand_total) %>%
@@ -151,8 +166,6 @@ most_honoree_count <- heritage %>%
 most_honoree_count
 
 ```
-
-
 #Now that I know which honoree has the most statues, I will see which, out of the four leaders chosen, has the most.
 ```{r}
 # Read in the next batch of data
@@ -173,7 +186,6 @@ bedford_forest <- read_csv("data/Nathan_Bedford_Forrest.csv")
 
 bedford_forest
 ```
-
 ```{r}
 stonewall_total <- stonewall_jackson %>%
     rename(state = `COUNTA of feature_name`) %>%
@@ -185,7 +197,6 @@ stonewall_total <- stonewall_jackson %>%
 stonewall_total
 
 ```
-
 #Finding the Robert E. Lee total
 ```{r}
 lee_total <- robert_e_lee %>%
@@ -198,7 +209,6 @@ lee_total <- robert_e_lee %>%
 lee_total
 
 ```
-
 #Finding the Jefferson Davis Total
 ```{r}
 davis_total <- jefferson_davis %>%
@@ -211,7 +221,6 @@ davis_total <- jefferson_davis %>%
 davis_total
 
 ```
-
 #Finding the Forest total
 ```{r}
 forest_total <- bedford_forest %>%
@@ -227,28 +236,29 @@ forest_total
 
 ##Finding 4: Breece
 
-## Description: This block will determine which states have the most symbols and specifically, monuments and how the number’s changed over time 
+## Description: This block will determine which states have the most United Daughters of the Confederacy symbols and specifically, monuments and how the number’s changed over time 
 
-#Finding which states have the most symbols 
+#Finding which states have the most UDC dedicated symbols
 
 ```{r}
-states_total <- heritage %>%
+states_UDC_total <- heritage %>%
   clean_names() %>%
-  group_by(state) %>%
+  filter(sponsors == "United Daughters of the Confederacy") %>%
+  group_by(sponsors, state) %>%
   count() %>%
   arrange(desc(n)) 
-states_total
+states_UDC_total
 ```
 
-#A: VA has the most with 301, followed by Texas with 242. 
+#A: GA has the most with 67, followed by NC with 48. 
 
-#Adding a filter column to specifically look at monuments 
+#Adding a filter column to specifically look at UDC dedicated monuments 
 
 ```{r}
 states_monument_total <- heritage %>%
   clean_names() %>%
-  group_by(state) %>%
-  filter(symbol_type == "Monument") %>%
+  filter(symbol_type == "Monument", sponsors == "United Daughters of the Confederacy") %>%
+  group_by(sponsors, state) %>%
   count(state) %>%
   arrange(desc(n))
 
@@ -256,37 +266,38 @@ states_monument_total <- heritage %>%
 
 ```
 
-#A: Found VA had most with 119 and GA had second most with 113 
+#A: Found GA had most with 62 and NC had second most with 47 
 
 #Now, filtering the data to only include symbols that have a year_dedicated value of less than or equal to 1936, which is halfway between the lowest and highest year_dedicated value to show how the numbers have changed over time. 
 
 ```{r}
 states_total_before <- heritage %>%
   clean_names() %>%
-  group_by(state) %>%
-  filter(year_dedicated <= "1936") %>% 
+  filter(sponsors == "United Daughters of the Confederacy", year_dedicated <= "1936") %>%
+  group_by(sponsors, state) %>%
   count() %>%
   arrange(desc(n))
 
   states_total_before
 
 ```
-#A: Found VA had the most still with 126 and Texas next with 110.  
+#A: Found GA had the most still with 56 and NC next with 46.   
 
 # Now, adding another filter column to specifically look at monuments
 
 ```{r}
 states_monument_before <- heritage %>%
   clean_names() %>%
-  group_by(state) %>%
-  filter(year_dedicated < "1936") %>%
-  filter(symbol_type == "Monument") %>%
+  group_by(sponsors, state) %>%
+  filter(sponsors == "United Daughters of the Confederacy", year_dedicated <= "1936", symbol_type == "Monument") %>%
   count() %>%
   arrange(desc(n))
 
   states_monument_before
 ```
-#A: Found VA had most with 97. Second, GA and NC both had 79  
+#A: Found GA had most with 54 and NC had 45. 
+
+
 
 ##Finding 5: Jummy 
 

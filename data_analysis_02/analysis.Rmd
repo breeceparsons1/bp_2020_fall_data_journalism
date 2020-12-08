@@ -19,13 +19,29 @@ library(vembedr)
 heritage <- read_csv("data/Whose_Heritage.csv") %>%
   clean_names()
 ```
+```{r}
+honoree_count <- read_csv("data/honoree_count.csv")
+```
+```{r}
+stonewall_jackson <- read_csv("data/Stonewall_Jackson.csv")
+```
+```{r}
+robert_e_lee <- read_csv("data/Robert_E_Lee_.csv") 
+```
+```{r}
+bedford_forest <- read_csv("data/Nathan_Bedford_Forrest.csv")
+```
+```{r}
+jefferson_davis <- read_csv("data/Jefferson_Davis_.csv")
+```
+
 ## Exploratory Analysis 
 
 ```{r}
 heritage %>%
   group_by(state) %>%
   count() %>%
-  arrange(desc(n)) %>%
+  arrange(desc(n))
 ```
 
 ```{r}

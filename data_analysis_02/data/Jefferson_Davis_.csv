@@ -1,0 +1,21 @@
+Jefferson_Davis_
+COUNTA of feature_name,Symbol Type,,,,,,,,,,,,
+State,Body of Water,City,College,County/Municipality,Highway / Roadway,Holiday,Marker,Monument,Other,Park,Roads,School,Grand Total
+AL,,,,,4,1,1,2,,,,,8
+AR,,,,,3,,,2,,,,,5
+AZ,,,,,,,1,,,,,,1
+CA,,,,,,,1,1,,,,,2
+DC,,,,,,,,2,,,,,2
+FL,,,,,2,1,,,,,,1,4
+GA,,,,1,10,,6,7,,1,,4,29
+KY,,,,,5,1,3,1,,1,,,11
+LA,,,,1,10,,2,1,,,,,14
+MO,,,,,1,,,,,,,,1
+MS,1,,1,1,14,1,2,1,1,,,2,24
+MT,,,,,,,,,1,,,,1
+NC,,,,,3,,1,2,,,,,6
+SC,,,,,5,,,1,,,,,6
+TN,,,,,6,,,,,,,,6
+TX,,1,,1,4,,,7,1,1,,1,16
+VA,,,,,3,,,1,,,1,2,7
+Grand Total,1,1,1,4,70,4,17,28,3,3,1,10,143

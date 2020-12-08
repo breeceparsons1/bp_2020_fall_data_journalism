@@ -1,0 +1,19 @@
+Stonewall_Jackson
+COUNTA of feature_name,Symbol Type,,,,,,,,,,,
+State,Building,City,College,County/Municipality,Highway / Roadway,Marker,Monument,Other,Park,Scholarship,School,Grand Total
+AL,,,,,3,,,,,1,,4
+AR,,,,,,,1,,,,,1
+FL,,,,,2,1,2,,,,1,6
+GA,,,,,6,,2,,,,,8
+LA,,1,,,,,,,,,,1
+MS,,1,,,2,,,,,,,3
+NC,1,,,,6,,1,,,,,8
+NY,,,,,1,,,,,,,1
+OH,,,,,2,,,,,,,2
+OK,,1,,1,,,,,,,1,3
+SC,,,,,21,,1,,,,,22
+TN,,,,,7,,,,,,,7
+TX,,1,,1,7,,1,,1,,4,15
+VA,,,1,,10,,2,1,,,5,19
+WV,,,,,2,,3,1,1,,,7
+Grand Total,1,4,1,2,69,1,13,2,2,1,11,107

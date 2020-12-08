@@ -144,9 +144,36 @@ UDC_recent_removals
 
 ##Finding 3: Susannah 
 
-##DESCRIPTION OF WHAT THE DATA IS, WHERE YOU GOT IT, WHAT IT INCLUDES, INCLUDING A LIST OF WHAT EACH FIELD IS. 
+Susannah Outhier
+## Description: This block will examine which honoree has the most monuments listed to their names of those highlighted in the data. This will then guide our questions for the Daughters of the Confederacy. Do most monuments honor generals? Or founders of hate groups?
 
-## * first_name | character | name of officer
+
+
+## Load libraries
+
+```{r}
+# Load the tidyverse
+library(tidyverse)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# If you are on a new machine you haven't used before, you may need to install these packages before loading.  If that's the case, remove the comment # from in front of the next two lines before running the codeblock, to install the packages before loading.
+# install.packages('tidyverse')
+# install.packages('vembedr')
+# install.packages('janitor')
+
+# Load the tidyverse, vembedr, janitor
+library(tidyverse)
+library(vembedr)
+library(janitor)
+
+```
+## Load and clean data
+## Data is from the same data spreadsheet but a separate sheet 
 
 ```{r}
 # Read in the data
@@ -163,10 +190,16 @@ most_honoree_count <- honoree_count %>%
    group_by(honoree_name) %>%
    arrange(desc(grand_total))
 #need to convert chr to dbl
-most_honoree_count
+Most_honoree_count
 
 ```
-#Now that I know which honoree has the most statues, I will see which, out of the four leaders chosen, has the most.
+#The honorees with the most monuments are Robert E. Lee, Jefferson Davis, Stonewall Jackson and then Gen. Beauregard.
+
+#This is a logical set of names as Lee was the lead general, Davis the president and Stonewall an extremely recognizable military leader. The most interesting leader was Beauregaurd–a general who changed his ideology later in life to fight for civil rights.
+
+#This now leads us to ask, why were these men chosen? Political leaders, they seem to be recognizable symbols of the Confederacy. One important name not in the top four is Nathan Bedford Forest.
+
+#Now that I know which honoree has the most statues, I will see which, out of the four leaders featured in the data due to their celebrity, has the most.
 ```{r}
 # Read in the next batch of data
 
@@ -233,6 +266,7 @@ forest_total <- bedford_forest %>%
 forest_total
 
 ```
+
 
 ##Finding 4: Breece
 

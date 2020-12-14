@@ -300,9 +300,10 @@ states_monument_before <- heritage %>%
 
 ## In 2020, 31 monuments attributed to UDC were removed. North Carolina removed the most monuments with 11. No monument dedicated later than 1961 was removed in 2020. The year 1905 had the most monuments removed in 2020.
 ```{r}
-#This displays the number of removals for each year within this decade.
-UDC_recent_removals_total <- UDC_recent_removals%>%
+#This displays the number of removals for each year within this decade particularly with UDC as the sponsor.
+UDC_recent_removals_total <- heritage%>%
   group_by(sponsors, year_removed)%>%
+  filter(sponsors == "United Daughters of the Confederacy") %>%
   count(year_removed)%>%
   arrange(desc(n))
 
@@ -311,8 +312,9 @@ UDC_recent_removals_total
 
 ```{r}
 #This code shows that there were 31 total UDC monument removals in 2020.
-UDC_2020_total_removals <-UDC_recent_removals%>%
+UDC_2020_total_removals <- heritage%>%
   filter(year_removed == "2020")%>%
+  filter(sponsors == "United Daughters of the Confederacy") %>%
   group_by(sponsors, year_removed)%>%
   count()
 
@@ -321,7 +323,7 @@ UDC_2020_total_removals
 
 ```{r}
 #This code tells what state had the most monuments removed in 2020: NC with 11.
-UDC_most_removals_2020 <- UDC_recent_removals %>%
+UDC_most_removals_2020 <- heritage %>%
   filter(year_removed == "2020")%>%
   group_by(sponsors, state, year_removed)%>%
   count()%>%
@@ -332,7 +334,7 @@ UDC_most_removals_2020
 
 ```{r}
 #This code shows that a statue dedicated in 1961 is the latest monument dedicated that was removed in 2020.
-latest_2020_removals <- UDC_recent_removals %>%
+latest_2020_removals <- heritage %>%
   filter(year_removed == "2020")%>%
   select(sponsors, year_dedicated, year_removed)%>%
   arrange(desc(year_dedicated))
@@ -342,7 +344,7 @@ latest_2020_removals
 
 ```{r}
 #This one shows the year_dedicated with the most removals in 2020.
-UDC_removals_year <-UDC_recent_removals%>%
+UDC_removals_year <- heritage %>%
   filter(year_removed == "2020")%>%
   group_by(year_dedicated)%>%
   count()%>%
